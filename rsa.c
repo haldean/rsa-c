@@ -19,7 +19,6 @@ void rsac_public_exponent(mpz_t* e) {
   mpz_init_set_ui(*e, 1 << 16 + 1);
 }
 
-// finds x such that x = b^-1 (mod a) using the extended Euclidean algorithm.
 void rsac_inverse_modulo(mpz_t a, mpz_t b, mpz_t x) {
   // q, r, s, t are temporary variables; q and r are used for quotient and
   // remainder, and s is used for swapping.

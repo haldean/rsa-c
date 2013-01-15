@@ -6,7 +6,7 @@ int main() {
 
   // Test rsac_inverse_modulo
   mpz_init_set_ui(a, 3);
-  mpz_init_set_si(b, 11);
+  mpz_init_set_ui(b, 11);
   mpz_init(c);
   rsac_inverse_modulo(a, b, c);
   if (mpz_cmp_ui(c, 4) != 0) {
