@@ -3,9 +3,6 @@
 #include <stdio.h>
 #include <gmp.h>
 
-// Caller is responsible for initializing all mpz arguments, including output.
-// Caller is not responsible for initializing struct arguments.
-
 typedef struct {
   mpz_t n, e;
 } public_key;

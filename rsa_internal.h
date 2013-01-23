@@ -1,6 +1,9 @@
 // Users of the rsac API shouldn't include this header; it's broken out for
 // testing of internal functions only.
 
+// Caller is responsible for initializing all mpz arguments, including output.
+// Caller is not responsible for initializing struct arguments.
+
 #ifndef __HALDEAN_RSA_INTERNAL_H__
 
 #include <gmp.h>
