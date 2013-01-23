@@ -26,7 +26,7 @@ void rsac_inverse_modulo(mpz_t a, mpz_t b, mpz_t x) {
   mpz_invert(x, a, b);
 }
 
-void rsac_keygen(mpz_t n, mpz_t e, mpz_t d, mpz_t p, mpz_t q) {
+int rsac_keygen_internal(mpz_t n, mpz_t e, mpz_t d, mpz_t p, mpz_t q) {
   // t1 and t2 are temp variables
   mpz_t phi, t1, t2;
   mpz_inits(t1, t2, phi, NULL);
@@ -51,10 +51,34 @@ void rsac_keygen(mpz_t n, mpz_t e, mpz_t d, mpz_t p, mpz_t q) {
 
     rsac_inverse_modulo(e, phi, d);
   }
+  mpz_clears(t1, t2, phi, NULL);
 
   if (rounds == 100) {
-    printf("Failed to find a d/e/n combination after 100 attempts.\n");
+    return -1;
   }
+  return 0;
+}
 
-  mpz_clears(t1, t2, phi, NULL);
+int rsac_keygen(public_key *pub, private_key *priv) {
+  mpz_t n, e, d, p, q;
+  mpz_inits(n, e, d, p, q, NULL);
+
+  int success = rsac_keygen_internal(n, e, d, p, q);
+  if (success != 0) return success;
+
+  mpz_init_set(pub->n, n);
+  mpz_init_set(pub->e, e);
+  mpz_init_set(priv->n, n);
+  mpz_init_set(priv->d, d);
+
+  mpz_clears(n, e, d, p, q, NULL);
+  return 0;
+}
+
+void rsac_encrypt_internal(public_key *pub, mpz_t m, mpz_t c) {
+  mpz_powm(c, m, pub->e, pub->n);
+}
+
+void rsac_decrypt_internal(private_key *priv, mpz_t c, mpz_t m) {
+  mpz_powm(m, c, priv->d, priv->n);
 }
