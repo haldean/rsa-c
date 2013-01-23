@@ -1,4 +1,5 @@
 #include "rsa.h"
+#include "rsa-internal.h"
 #include <time.h>
 
 #define PQ_PRIME_SIZE_BITS 512
