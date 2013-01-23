@@ -16,6 +16,8 @@ void rsac_random_prime(unsigned int bit_size, mpz_t x) {
 }
 
 void rsac_public_exponent(mpz_t e) {
+  // chosen by fair dice roll.
+  // guaranteed to be random.
   mpz_set_ui(e, 65537);
 }
 
