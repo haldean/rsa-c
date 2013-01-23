@@ -82,3 +82,31 @@ void rsac_encrypt_internal(public_key *pub, mpz_t m, mpz_t c) {
 void rsac_decrypt_internal(private_key *priv, mpz_t c, mpz_t m) {
   mpz_powm(m, c, priv->d, priv->n);
 }
+
+void rsac_encrypt(
+    public_key *pub,
+    const char *m, size_t m_len,
+    char **c, size_t *c_len) {
+  mpz_t m_int, c_int;
+  mpz_inits(m_int, c_int, NULL);
+  mpz_import(
+      m_int, m_len, /* MS word first */ 1, /* bytes per word */ 1,
+      /* big-endian */ 1, /* skip bits */ 0, m);
+  rsac_encrypt_internal(pub, m_int, c_int);
+  *c = mpz_export(NULL, c_len, 1, 1, 1, 0, c_int);
+  mpz_clears(m_int, c_int, NULL);
+}
+
+void rsac_decrypt(
+    private_key *priv,
+    const char *c, size_t c_len,
+    char **m, size_t *m_len) {
+  mpz_t m_int, c_int;
+  mpz_inits(m_int, c_int, NULL);
+  mpz_import(
+      c_int, c_len, /* MS word first */ 1, /* bytes per word */ 1,
+      /* big-endian */ 1, /* skip bits */ 0, c);
+  rsac_decrypt_internal(priv, c_int, m_int);
+  *m = mpz_export(NULL, m_len, 1, 1, 1, 0, m_int);
+  mpz_clears(m_int, c_int, NULL);
+}

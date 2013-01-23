@@ -1,6 +1,7 @@
 #include "rsa.h"
 #include <time.h>
 #include "stdlib.h"
+#include "string.h"
 
 int test_rsac_inverse_modulo() {
   int fail = 0;
@@ -195,6 +196,44 @@ int test_rsac_encrypt_decrypt_inverses() {
   return fail;
 }
 
+int test_rsac_string_encrypt_decrypt() {
+  char m[] = "stop slacking off.";
+  size_t c_len, m_len = strlen(m), result_len;
+  char **c = calloc(sizeof(char *), 1);
+  char **m_result = calloc(sizeof(char *), 1);
+  int fail = 0;
+  public_key* pub = calloc(sizeof(public_key), 1);
+  private_key* priv = calloc(sizeof(private_key), 1);
+
+  if (pub == NULL || priv == NULL) {
+    printf("FAIL: rsac_string_encrypt_decrypt could not allocate public or private key struct\n");
+    return 1;
+  }
+
+  int res = rsac_keygen(pub, priv);
+  if (res != 0) {
+    printf("FAIL: rsac_string_encrypt_decrypt rsac_keygen returned %d, expected 0\n", res);
+    fail++;
+  }
+
+  rsac_encrypt(pub, m, m_len, c, &c_len);
+  rsac_decrypt(priv, *c, c_len, m_result, &result_len);
+  if (strlen(*m_result) != m_len || strncmp(m, *m_result, m_len) != 0) {
+    printf("FAIL: rsac_string_encrypt_decrypt message did not match after encryption and decryption.\n");
+    printf("expected '%s' but got '%s'\n", m, *m_result);
+    fail++;
+  }
+
+  free(pub);
+  free(priv);
+  free(*c);
+  free(*m_result);
+  if (fail == 0) {
+    printf("PASS: rsac_string_encrypt_decrypt\n");
+  }
+  return fail;
+}
+
 int main() {
   int failures = 0;
 
@@ -203,6 +242,7 @@ int main() {
   failures += test_rsac_keygen_internal();
   failures += test_rsac_keygen();
   failures += test_rsac_encrypt_decrypt_inverses();
+  failures += test_rsac_string_encrypt_decrypt();
 
   printf("%d failures\n", failures);
   return failures > 0;

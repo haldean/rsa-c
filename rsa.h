@@ -38,7 +38,19 @@ int rsac_keygen(public_key *pub, private_key *priv);
 // in: pub, m, out: c
 void rsac_encrypt_internal(public_key *pub, mpz_t m, mpz_t c);
 
+// in: pub, m, m_len, out: c, c_len
+void rsac_encrypt(
+    public_key *pub,
+    const char *m, size_t m_len,
+    char **c, size_t *c_len);
+
 // in: priv, c, out: m
 void rsac_decrypt_internal(private_key *priv, mpz_t c, mpz_t m);
+
+// in: priv, c, c_len, out: m, m_len
+void rsac_decrypt(
+    private_key *priv,
+    const char *c, size_t c_len,
+    char **m, size_t *m_len);
 
 #endif
