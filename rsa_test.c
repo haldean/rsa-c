@@ -1,5 +1,5 @@
 #include "rsa.h"
-#include "rsa-internal.h"
+#include "rsa_internal.h"
 #include <time.h>
 #include "stdlib.h"
 #include "string.h"
